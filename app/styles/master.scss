@@ -1,0 +1,64 @@
+$card-size: 8em;
+$card-padding: $card-size / 16;
+
+
+.board {
+	background: #2AA33E;
+	width: 100%;
+	height: 100vh;
+}
+.card {
+	font-family: sans-serif;
+	font-weight: bold;
+	width: $card-size;
+	height: $card-size * 1.5;
+	background: white;
+	border-radius: 4px;
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	margin: 1em 1em 1em 0;
+	display: inline-block;
+	padding: 0.5em;
+	box-sizing: border-box;
+	position: relative;
+	transition: transform 0.3s ease;
+	> * {
+		position: absolute;
+		font-size: 1.3em;
+	}
+	> span:first-child {
+		top: $card-padding;
+		left: $card-padding;
+	}
+	> span:last-child {
+		bottom: $card-padding;
+		right: $card-padding;
+	}
+	.type {
+		position: absolute;
+		text-align: center;
+		font-size: $card-size / 2;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	&:first-child {
+		margin-left: 1em;
+	}
+	&.red {
+		color: red;
+	}
+}
+
+.draw {
+	background: black;
+	float: left;
+	.full {
+		width: $card-size;
+		height: $card-size * 1.5;
+		background: grey;
+	}
+	.open {
+		background: none;
+		border: 2px dotted grey;
+	}
+}
