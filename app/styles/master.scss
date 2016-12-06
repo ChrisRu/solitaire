@@ -69,21 +69,24 @@ body {
 	}
 }
 
+
+
+.full, .view, .empty, .stack {
+	width: $card-size;
+	height: $card-size * 1.5;
+	border: 1px dashed white;
+	box-sizing: border-box;
+}
+
 .draw {
-	float: left;
 	margin-bottom: 1em;
+	display: flex;
+	justify-content: space-around;
 	.full {
-		width: $card-size;
-		height: $card-size * 1.5;
-		display: inline-block;
-		margin-right: 1em;
+
 	}
 	.view {
-		display: inline-block;
-		width: $card-size;
-		height: $card-size * 1.5;
-		background: none;
-		border: 1px dashed white;
+
 	}
 }
 
@@ -92,15 +95,20 @@ body {
 	width: 100%;
 	justify-content: space-around;
 	.stack {
-		display: inline-block;
-		width: $card-size;
-		height: $card-size * 1.5;
-		border: 1px dashed white;
-		box-sizing: border-box;
 		@for $i from 2 through 6 {
 			.card:nth-child(#{$i}) {
 				margin-top: 1em * ($i - 1);
 			}
 		}
 	}
+}
+
+.finish {
+	display: flex;
+	justify-content: space-around;
+}
+
+.top {
+	display: flex;
+	justify-content: space-between;
 }
