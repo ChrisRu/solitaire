@@ -64,4 +64,23 @@ for (let card of cards) {
 
 */
 
+const cardsEl = document.getElementsByClassName("card");
+let selected;
+let interval;
 
+for (let i = 0; i < cardsEl.length; i++) {
+  cardsEl[i].addEventListener("mousedown", function() {
+    selected = this;
+  });
+}
+
+document.addEventListener("mouseup", function() {
+  selected = undefined;
+});
+
+document.addEventListener("mousemove", function() {
+  if (selected !== undefined) {
+    selected.style.top = event.clientY - selected.offsetHeight / 2 + "px";
+    selected.style.left = event.clientX - selected.offsetWidth / 2 + "px";
+  }
+});
