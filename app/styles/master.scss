@@ -1,11 +1,16 @@
 $card-size: 8em;
 $card-padding: $card-size / 16;
 
+body {
+	margin: 0;
+}
 
 .board {
 	background: #2AA33E;
 	width: 100%;
 	height: 100vh;
+	padding: 1em;
+	box-sizing: border-box;
 }
 .card {
 	font-family: sans-serif;
@@ -65,17 +70,37 @@ $card-padding: $card-size / 16;
 }
 
 .draw {
-	background: black;
 	float: left;
+	margin-bottom: 1em;
 	.full {
 		width: $card-size;
 		height: $card-size * 1.5;
-		background: grey;
+		display: inline-block;
+		margin-right: 1em;
 	}
-	.open {
+	.view {
+		display: inline-block;
 		width: $card-size;
 		height: $card-size * 1.5;
 		background: none;
-		border: 2px dotted grey;
+		border: 1px dashed white;
+	}
+}
+
+.stacks {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+	.stack {
+		display: inline-block;
+		width: $card-size;
+		height: $card-size * 1.5;
+		border: 1px dashed white;
+		box-sizing: border-box;
+		@for $i from 2 through 6 {
+			.card:nth-child(#{$i}) {
+				margin-top: 1em * ($i - 1);
+			}
+		}
 	}
 }

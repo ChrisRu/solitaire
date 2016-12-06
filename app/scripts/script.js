@@ -2,6 +2,17 @@ function $(e) {
   return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e);
 }
 
+Array.prototype.indexOf0 = function(a) {
+  for(let i = 0; i < this.length; i++) {
+    if (a == this[i][0]) {
+      return i;
+    }
+    return null;
+  };
+}
+
+let cards = [];
+
 let Card = function (num, type) {
   this.num = num
   this.type = type
@@ -50,10 +61,37 @@ function numToName (num) {
   }
 }
 
-let cards = [new Card(4, 1), new Card(1, 2), new Card(5, 0), new Card(13, 3)]
-for (let card of cards) {
-  $('.stacks').appendChild(card.element())
+function initStacks() {
+  for (let i = 1; i < 7; i++) {
+    let el = document.createElement("div");
+    el.classList.add("stack");
+    el.classList.add("stack_" + i);
+    el.setAttribute("max", i);
+    $('.stacks').appendChild(el);
+  }
+
+  for (let i = 0; i < $('.stack').length; i++) {
+    let max = $('.stack')[i].getAttribute("max");
+
+    for (let j = 0; j < max; j++) {
+      let randNum = Math.floor(Math.random() * 12 + 1);
+      let randType = Math.floor(Math.random() * 4);
+      let card = new Card(randNum, randType);
+
+      if (cards.indexOf0([randNum, randType]) == null) {
+        cards.push([randNum, randType]);
+        $('.stack')[i].appendChild(card.element());
+      } else {
+        console.log(card);
+        console.log("Exists already");
+      }
+      
+    }
+  }
 }
+
+
+initStacks();
 
 // const full = $('full')[0]
 
