@@ -1,3 +1,7 @@
+function $(e) {
+  return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e);
+}
+
 let Card = function (num, type) {
   this.num = num
   this.type = type
@@ -28,12 +32,12 @@ function typeToName (type) {
 }
 
 function numToName (num) {
-  if (num >= 0 && num <= 13) {
+  if (num >= 1 && num <= 13) {
     switch (num) {
-      case 0:
+      case 1:
         return 'A'
       case 11:
-        return 'B'
+        return 'J'
       case 12:
         return 'Q'
       case 13:
@@ -46,12 +50,12 @@ function numToName (num) {
   }
 }
 
-let cards = [new Card(4, 1), new Card(1, 2), new Card(5, 0), new Card(11, 3)]
+let cards = [new Card(4, 1), new Card(1, 2), new Card(5, 0), new Card(13, 3)]
 for (let card of cards) {
-  document.getElementsByClassName('stacks')[0].appendChild(card.element())
+  $('.stacks').appendChild(card.element())
 }
 
-// const full = document.getElementsByClassName('full')[0]
+// const full = $('full')[0]
 
 
 /*
@@ -64,7 +68,7 @@ for (let card of cards) {
 
 */
 
-const cardsEl = document.getElementsByClassName("card");
+const cardsEl = $(".card");
 let selected;
 let interval;
 
