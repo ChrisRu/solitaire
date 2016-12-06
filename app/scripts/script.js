@@ -71,6 +71,7 @@ let interval;
 for (let i = 0; i < cardsEl.length; i++) {
   cardsEl[i].addEventListener("mousedown", function() {
     selected = this;
+    this.classList.toggle("open");
   });
 }
 
