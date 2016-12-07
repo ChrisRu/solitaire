@@ -1,3 +1,10 @@
+
+/* --------------------
+
+  GENERAL FUNCTIONS
+
+-------------------- */
+
 function $(e) {
   return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e)
 }
@@ -6,7 +13,7 @@ function shuffle(array) {
   let currentIndex = array.length, temporaryValue, randomIndex
   while (0 !== currentIndex) {
     randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex -= 1
+    currentIndex--
 
     temporaryValue = array[currentIndex]
     array[currentIndex] = array[randomIndex]
@@ -15,7 +22,12 @@ function shuffle(array) {
   return array
 }
 
-let cards = []
+/* --------------------
+
+  CARDS
+
+-------------------- */
+
 let allCards = []
 
 let Card = function (num, type) {
@@ -40,8 +52,6 @@ function initCards() {
   }
   allCards = shuffle(allCards);
 }
-
-
 
 function typeToName (type) {
   switch (type) {
@@ -77,6 +87,9 @@ function numToName (num) {
   }
 }
 
+
+
+
 function initStacks() {
   for (let i = 1; i < 8; i++) {
     let el = document.createElement("div")
@@ -110,12 +123,22 @@ function initStacks() {
 
 let selected
 
-function initToggle() {
+function setSelected(el) {
+  selected = el
+  selected.classList.add("selected")
+}
+
+function rmSelected() {
+  selected.classList.remove("selected")
+  selected = undefined
+}
+
+function initDraggable() {
   const cardsEl = $(".card")
   
   for (let i = 0; i < cardsEl.length; i++) {
     cardsEl[i].addEventListener("mousedown", function() {
-      selected = this
+      setSelected(this)
     })
   }
 }
@@ -127,12 +150,14 @@ function initDragAndDrop() {
     if (selected !== undefined) {
       selected.style.top = "auto"
       selected.style.left = "auto"
-      selected = undefined
+      rmSelected()
     }
   })
 
   document.addEventListener("mouseup", function() {
-    selected = undefined
+    if (selected !== undefined) {
+      rmSelected()
+    }
   })
 
   document.addEventListener("mousemove", function() {
@@ -154,7 +179,7 @@ function drop(parent) {
   if (selected !== undefined) {
     let element = selected
     element.parentNode.removeChild(selected)
-    selected = undefined
+    rmSelected()
 
     parent.appendChild(element)
 
@@ -171,5 +196,5 @@ function viewCanStack(current, card) {
 
 initCards()
 initStacks()
-initToggle()
+initDraggable()
 initDragAndDrop()
