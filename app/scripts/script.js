@@ -11,6 +11,19 @@ Array.prototype.indexOf0 = function(a) {
   };
 }
 
+Array.prototype.shuffle = function(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+
 let cards = [];
 
 let Card = function (num, type) {
