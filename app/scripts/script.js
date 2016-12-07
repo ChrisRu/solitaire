@@ -11,7 +11,7 @@ Array.prototype.indexOf0 = function(a) {
   }
 }
 
-Array.prototype.shuffle = function(array) {
+function shuffle(array) {
   let currentIndex = array.length, temporaryValue, randomIndex
   while (0 !== currentIndex) {
     randomIndex = Math.floor(Math.random() * currentIndex)
@@ -47,6 +47,7 @@ function initCards() {
       allCards.push(new Card(j,i))
     }
   }
+  allCards = shuffle(allCards);
 }
 
 
@@ -105,8 +106,12 @@ function initStacks() {
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
-      drop(this);
+      drop(this)
     })
+  }
+
+  for (let i = 0; i < allCards.length; i++) {
+    $(".full").appendChild(allCards[i].element())
   }
 }
 
