@@ -149,6 +149,10 @@ function initDragAndDrop() {
   }
 }
 
+function viewCanStack(current, card) {
+  return (card.num == current.num + 1)
+}
+
 // Init
 
 initStacks()
