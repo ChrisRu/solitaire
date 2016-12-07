@@ -182,7 +182,3 @@ initCards()
 initStacks()
 initToggle()
 initDragAndDrop()
-
-
-
-console.table(allCards)
