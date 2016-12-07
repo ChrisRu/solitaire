@@ -86,7 +86,7 @@ function numToName (num) {
 }
 
 function initStacks() {
-  for (let i = 1; i < 7; i++) {
+  for (let i = 1; i < 8; i++) {
     let el = document.createElement("div")
     el.classList.add("stack")
     el.classList.add("stack_" + i)
@@ -98,18 +98,10 @@ function initStacks() {
     let max = $('.stack')[i].getAttribute("max")
 
     for (let j = 0; j < max; j++) {
-      let randNum = Math.floor(Math.random() * 12 + 1)
-      let randType = Math.floor(Math.random() * 4)
-      let card = new Card(randNum, randType)
-
-      if (cards.indexOf0([randNum, randType]) == null) {
-        cards.push([randNum, randType])
-        $('.stack')[i].appendChild(card.element())
-      } else {
-        console.log(card)
-        console.log("Exists already")
-      }
+      let randomCard = allCards[Math.floor(Math.random() * allCards.length)]
+      allCards.shift(randomCard)
       
+      $('.stack')[i].appendChild(randomCard.element())
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
@@ -181,10 +173,11 @@ function viewCanStack(current, card) {
 
 // Init
 
+initCards()
 initStacks()
 initToggle()
 initDragAndDrop()
 
-initCards()
+
 
 console.table(allCards)
