@@ -90,58 +90,56 @@ function initStacks() {
   }
 }
 
+// Toggle flip
 
-initStacks();
-
-// const full = $('full')[0]
-
-
-/*
-
-=============================================================================
-=============================================================================
-=============================================================================
-=============================================================================
-=============================================================================
-
-*/
-
-const cardsEl = $(".card");
 let selected;
-let interval;
 
-for (let i = 0; i < cardsEl.length; i++) {
-  cardsEl[i].addEventListener("mousedown", function() {
-    selected = this;
-    this.classList.toggle("open");
-  });
+function initToggle() {
+  const cardsEl = $(".card");
+  
+  for (let i = 0; i < cardsEl.length; i++) {
+    cardsEl[i].addEventListener("mousedown", function() {
+      selected = this;
+      this.classList.toggle("open");
+    });
+  }
 }
 
-document.addEventListener("mouseup", function() {
-  selected = undefined;
-});
+// Drag and drop
 
-document.addEventListener("mousemove", function() {
-  if (selected !== undefined) {
-    selected.style.top = event.clientY - selected.offsetHeight / 2 + "px";
-    selected.style.left = event.clientX - selected.offsetWidth / 2 + "px";
-  }
-});
+function initDragAndDrop() {
+  document.addEventListener("mouseup", function() {
+    selected = undefined;
+  });
 
-const finish = $(".finish .empty");
-for (let i = 0; i < finish.length; i++) {
-  finish[i].addEventListener("mouseover", function() {
+  document.addEventListener("mousemove", function() {
     if (selected !== undefined) {
-      let element = selected;
-      element.parentNode.removeChild(selected);
-      selected = undefined;
-
-      finish[i].appendChild(element);
-
-      element.style.top = "auto";
-      element.style.left = "auto";
-      
-      console.log(element);
+      selected.style.top = event.clientY - selected.offsetHeight / 2 + "px";
+      selected.style.left = event.clientX - selected.offsetWidth / 2 + "px";
     }
   });
+
+  const finish = $(".finish .empty");
+  for (let i = 0; i < finish.length; i++) {
+    finish[i].addEventListener("mouseup", function() {
+      if (selected !== undefined && !finish[i].contains(selected)) {
+        let element = selected;
+        element.parentNode.removeChild(selected);
+        selected = undefined;
+
+        finish[i].appendChild(element);
+
+        element.style.top = "auto";
+        element.style.left = "auto";
+        
+        console.log(element);
+      }
+    });
+  }
 }
+
+// Init
+
+initStacks();
+initToggle();
+initDragAndDrop();
