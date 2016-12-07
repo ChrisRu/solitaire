@@ -95,12 +95,12 @@ function initStacks() {
     let el = document.createElement("div")
     el.classList.add("stack")
     el.classList.add("stack_" + i)
-    el.setAttribute("max", i)
+    el.setAttribute("data-max", i)
     $('.stacks').appendChild(el)
   }
 
   for (let i = 0; i < $('.stack').length; i++) {
-    let max = $('.stack')[i].getAttribute("max")
+    let max = $('.stack')[i].getAttribute("data-max")
 
     for (let j = 0; j < max; j++) {
       let randomCard = allCards[Math.floor(Math.random() * allCards.length)]
@@ -110,7 +110,7 @@ function initStacks() {
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
-      drop(this)
+      drop(this);
     })
   }
 
@@ -166,22 +166,24 @@ function initDragAndDrop() {
       selected.style.left = event.clientX - selected.offsetWidth / 2 + "px"
     }
   })
-
+  
   const finish = $(".finish .empty");
   for (let i = 0; i < finish.length; i++) {
     finish[i].addEventListener("mouseup", function() {
-      drop(finish[i])
+      drop(this)
     })
   }
 }
 
 function drop(parent) {
   if (selected !== undefined) {
+    selected.parentNode.removeChild(selected)
     let element = selected
-    element.parentNode.removeChild(selected)
     rmSelected()
 
     parent.appendChild(element)
+    console.log(parent);
+    console.log(element);
 
     element.style.top = "auto"
     element.style.left = "auto"
