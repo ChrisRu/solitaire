@@ -127,3 +127,21 @@ document.addEventListener("mousemove", function() {
     selected.style.left = event.clientX - selected.offsetWidth / 2 + "px";
   }
 });
+
+const finish = $(".finish .empty");
+for (let i = 0; i < finish.length; i++) {
+  finish[i].addEventListener("mouseover", function() {
+    if (selected !== undefined) {
+      let element = selected;
+      element.parentNode.removeChild(selected);
+      selected = undefined;
+
+      finish[i].appendChild(element);
+
+      element.style.top = "auto";
+      element.style.left = "auto";
+      
+      console.log(element);
+    }
+  });
+}
