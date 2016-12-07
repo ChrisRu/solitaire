@@ -2,15 +2,6 @@ function $(e) {
   return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e)
 }
 
-Array.prototype.indexOf0 = function(a) {
-  for(let i = 0; i < this.length; i++) {
-    if (a == this[i][0]) {
-      return i
-    }
-    return null
-  }
-}
-
 function shuffle(array) {
   let currentIndex = array.length, temporaryValue, randomIndex
   while (0 !== currentIndex) {
@@ -36,7 +27,7 @@ let Card = function (num, type) {
     let el = document.createElement('div')
     el.classList.add('card')
     el.classList.add(this.typeName[2])
-    el.innerHTML = '<span>' + this.numName + this.typeName[1] + '</span><div class="type">' + this.typeName[1] + '</div><span>' + this.numName + this.typeName[1] + '</span>'
+    el.innerHTML = '<span>' + this.numName + " " + this.typeName[1] + '</span><div class="type">' + this.typeName[1] + '</div><span>' + this.numName + " " + this.typeName[1] + '</span>'
     return el
   }
 }
