@@ -1,30 +1,30 @@
 function $(e) {
-  return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e);
+  return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e)
 }
 
 Array.prototype.indexOf0 = function(a) {
   for(let i = 0; i < this.length; i++) {
     if (a == this[i][0]) {
-      return i;
+      return i
     }
-    return null;
-  };
+    return null
+  }
 }
 
 Array.prototype.shuffle = function(array) {
-  let currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length, temporaryValue, randomIndex
   while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
 
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
+    temporaryValue = array[currentIndex]
+    array[currentIndex] = array[randomIndex]
+    array[randomIndex] = temporaryValue
   }
-  return array;
+  return array
 }
 
-let cards = [];
+let cards = []
 
 let Card = function (num, type) {
   this.num = num
@@ -76,27 +76,27 @@ function numToName (num) {
 
 function initStacks() {
   for (let i = 1; i < 7; i++) {
-    let el = document.createElement("div");
-    el.classList.add("stack");
-    el.classList.add("stack_" + i);
-    el.setAttribute("max", i);
-    $('.stacks').appendChild(el);
+    let el = document.createElement("div")
+    el.classList.add("stack")
+    el.classList.add("stack_" + i)
+    el.setAttribute("max", i)
+    $('.stacks').appendChild(el)
   }
 
   for (let i = 0; i < $('.stack').length; i++) {
-    let max = $('.stack')[i].getAttribute("max");
+    let max = $('.stack')[i].getAttribute("max")
 
     for (let j = 0; j < max; j++) {
-      let randNum = Math.floor(Math.random() * 12 + 1);
-      let randType = Math.floor(Math.random() * 4);
-      let card = new Card(randNum, randType);
+      let randNum = Math.floor(Math.random() * 12 + 1)
+      let randType = Math.floor(Math.random() * 4)
+      let card = new Card(randNum, randType)
 
       if (cards.indexOf0([randNum, randType]) == null) {
-        cards.push([randNum, randType]);
-        $('.stack')[i].appendChild(card.element());
+        cards.push([randNum, randType])
+        $('.stack')[i].appendChild(card.element())
       } else {
-        console.log(card);
-        console.log("Exists already");
+        console.log(card)
+        console.log("Exists already")
       }
       
     }
@@ -105,16 +105,16 @@ function initStacks() {
 
 // Toggle flip
 
-let selected;
+let selected
 
 function initToggle() {
-  const cardsEl = $(".card");
+  const cardsEl = $(".card")
   
   for (let i = 0; i < cardsEl.length; i++) {
     cardsEl[i].addEventListener("mousedown", function() {
-      selected = this;
-      this.classList.toggle("open");
-    });
+      selected = this
+      this.classList.toggle("open")
+    })
   }
 }
 
@@ -122,37 +122,35 @@ function initToggle() {
 
 function initDragAndDrop() {
   document.addEventListener("mouseup", function() {
-    selected = undefined;
-  });
+    selected = undefined
+  })
 
   document.addEventListener("mousemove", function() {
     if (selected !== undefined) {
-      selected.style.top = event.clientY - selected.offsetHeight / 2 + "px";
-      selected.style.left = event.clientX - selected.offsetWidth / 2 + "px";
+      selected.style.top = event.clientY - selected.offsetHeight / 2 + "px"
+      selected.style.left = event.clientX - selected.offsetWidth / 2 + "px"
     }
-  });
+  })
 
   const finish = $(".finish .empty");
   for (let i = 0; i < finish.length; i++) {
     finish[i].addEventListener("mouseup", function() {
       if (selected !== undefined && !finish[i].contains(selected)) {
-        let element = selected;
-        element.parentNode.removeChild(selected);
-        selected = undefined;
+        let element = selected
+        element.parentNode.removeChild(selected)
+        selected = undefined
 
-        finish[i].appendChild(element);
+        finish[i].appendChild(element)
 
-        element.style.top = "auto";
-        element.style.left = "auto";
-        
-        console.log(element);
+        element.style.top = "auto"
+        element.style.left = "auto"
       }
-    });
+    })
   }
 }
 
 // Init
 
-initStacks();
-initToggle();
-initDragAndDrop();
+initStacks()
+initToggle()
+initDragAndDrop()
