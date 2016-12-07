@@ -100,6 +100,10 @@ function initStacks() {
       }
       
     }
+
+    $('.stack')[i].addEventListener("mouseup", function() {
+      drop(this);
+    })
   }
 }
 
@@ -113,7 +117,6 @@ function initToggle() {
   for (let i = 0; i < cardsEl.length; i++) {
     cardsEl[i].addEventListener("mousedown", function() {
       selected = this
-      this.classList.toggle("open")
     })
   }
 }
@@ -121,6 +124,14 @@ function initToggle() {
 // Drag and drop
 
 function initDragAndDrop() {
+  document.body.addEventListener("mouseleave", function() {
+    if (selected !== undefined) {
+      selected.style.top = "auto"
+      selected.style.left = "auto"
+      selected = undefined
+    }
+  })
+
   document.addEventListener("mouseup", function() {
     selected = undefined
   })
@@ -135,17 +146,21 @@ function initDragAndDrop() {
   const finish = $(".finish .empty");
   for (let i = 0; i < finish.length; i++) {
     finish[i].addEventListener("mouseup", function() {
-      if (selected !== undefined && !finish[i].contains(selected)) {
-        let element = selected
-        element.parentNode.removeChild(selected)
-        selected = undefined
-
-        finish[i].appendChild(element)
-
-        element.style.top = "auto"
-        element.style.left = "auto"
-      }
+      drop(finish[i])
     })
+  }
+}
+
+function drop(parent) {
+  if (selected !== undefined) {
+    let element = selected
+    element.parentNode.removeChild(selected)
+    selected = undefined
+
+    parent.appendChild(element)
+
+    element.style.top = "auto"
+    element.style.left = "auto"
   }
 }
 
