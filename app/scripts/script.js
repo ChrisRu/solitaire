@@ -25,6 +25,7 @@ Array.prototype.shuffle = function(array) {
 }
 
 let cards = []
+let allCards = []
 
 let Card = function (num, type) {
   this.num = num
@@ -39,6 +40,16 @@ let Card = function (num, type) {
     return el
   }
 }
+
+function initCards() {
+  for (let i = 0; i <= 3; i++) {
+    for (let j = 1; j <= 13; j++) {
+      allCards.push(new Card(j,i))
+    }
+  }
+}
+
+
 
 function typeToName (type) {
   switch (type) {
@@ -173,3 +184,7 @@ function viewCanStack(current, card) {
 initStacks()
 initToggle()
 initDragAndDrop()
+
+initCards()
+
+console.table(allCards)
