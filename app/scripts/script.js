@@ -138,11 +138,13 @@ function setSelected(el) {
 }
 
 function rmSelected() {
-  for (let el of selected) {
-    el.classList.remove("selected")
-    el.classList.remove("clickthrough")
+  if (typeof selected[0] !== undefined) {
+    for (let el of selected) {
+      el.classList.remove("selected")
+      el.classList.remove("clickthrough")
+    }
+    selected = [];
   }
-  selected = [];
 }
 
 function initDraggable() {
@@ -162,20 +164,14 @@ function initDraggable() {
 // Drag and drop
 
 function initDragAndDrop() {
-  document.body.addEventListener("mouseleave", function() {
+  document.addEventListener("mouseup", function() {
     if (typeof selected[0] !== undefined) {
       for (let el of selected) {
         el.style.top = "auto"
         el.style.left = "auto"
       }
-      rmSelected()
     }
-  })
-
-  document.addEventListener("mouseup", function() {
-    if (typeof selected[0] !== undefined) {
-      rmSelected()
-    }
+    rmSelected();
   })
 
   document.addEventListener("mousemove", function() {

@@ -25,7 +25,7 @@ body {
 	box-sizing: border-box;
 	position: absolute;
 	transform: rotateY(-180deg);
-	transition: transform 0.3s ease;
+	transition: transform 0.3s ease, top 0.02s linear, left 0.02s linear;
 	* {
 		pointer-events: none;
 	}
