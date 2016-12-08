@@ -45,3 +45,5 @@ gulp.task('serve', function() {
 		}
 	});
 });
+
+gulp.task('dist', ['html', 'babel', 'sass']);
