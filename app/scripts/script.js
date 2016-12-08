@@ -118,7 +118,7 @@ function initStacks() {
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
-      drop(this);
+      drop(this)
     })
   }
 
@@ -133,12 +133,14 @@ let selected = []
 
 function setSelected(el) {
   el.classList.add("selected")
+  el.classList.add("clickthrough")
   selected.push(el)
 }
 
 function rmSelected() {
   for (let el of selected) {
     el.classList.remove("selected")
+    el.classList.remove("clickthrough")
   }
   selected = [];
 }
@@ -148,7 +150,11 @@ function initDraggable() {
   
   for (let i = 0; i < cardsEl.length; i++) {
     cardsEl[i].addEventListener("mousedown", function() {
-      setSelected(this)
+      let sibling = this
+      while(sibling) {
+        setSelected(sibling)
+        sibling = sibling.nextElementSibling
+      }
     })
   }
 }
@@ -157,7 +163,7 @@ function initDraggable() {
 
 function initDragAndDrop() {
   document.body.addEventListener("mouseleave", function() {
-    if (selected[0]) {
+    if (typeof selected[0] !== undefined) {
       for (let el of selected) {
         el.style.top = "auto"
         el.style.left = "auto"
@@ -167,15 +173,13 @@ function initDragAndDrop() {
   })
 
   document.addEventListener("mouseup", function() {
-    if (selected[0]) {
+    if (typeof selected[0] !== undefined) {
       rmSelected()
     }
   })
 
   document.addEventListener("mousemove", function() {
-    
-    if (selected[0]) {
-      console.log('sup')
+    if (typeof selected[0] !== undefined) {
       for (let el of selected) {
         el.style.top = event.clientY - el.offsetHeight / 2 + "px"
         el.style.left = event.clientX - el.offsetWidth / 2 + "px"
@@ -192,20 +196,17 @@ function initDragAndDrop() {
 }
 
 function drop(parent) {
-  if (selected[0]) {
+  if (typeof selected[0] !== undefined) {
     for (let el of selected) {
-      el.parentNode.removeChild(el)
       let element = el
-      rmSelected()
+      el.parentNode.removeChild(el)
 
       parent.appendChild(element)
-      console.log(parent);
-      console.log(element);
 
       element.style.top = "auto"
       element.style.left = "auto"
     }
-    
+    rmSelected()
   }
 }
 

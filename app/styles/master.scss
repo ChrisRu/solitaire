@@ -77,8 +77,17 @@ body {
 	}
 }
 
+.clickthrough {
+	pointer-events: none;
+}
+
 .selected {
 	margin: 0 !important;
+	@for $i from 2 through 13 {
+		&:nth-child(#{$i}) {
+			margin-top: ($card-padding * ($i - 1) * 8) !important;
+		}
+	}
 }
 
 .full, .view, .empty, .stack {
