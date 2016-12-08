@@ -1,7 +1,7 @@
 
 /* --------------------
 
-  GENERAL FUNCTIONS
+   GENERAL FUNCTIONS   
 
 -------------------- */
 
@@ -24,23 +24,67 @@ function shuffle(array) {
 
 /* --------------------
 
-  CARDS
+         CARDS
 
 -------------------- */
 
 let allCards = []
 
-let Card = function (num, type) {
-  this.num = num
-  this.type = type
-  this.numName = numToName(this.num)
-  this.typeName = typeToName(this.type)
-  this.element = function () {
+class Card {
+  constructor(num, type) {
+    this.num = num
+    this.type = type
+  }
+  
+  get numName() {
+    return this._numToName(this.num)
+  }
+
+  get typeName() {
+    return this._typeToName(this.type)
+  }
+
+  get element() {
     let el = document.createElement('div')
     el.classList.add('card')
     el.classList.add(this.typeName[2])
-    el.innerHTML = '<span>' + this.numName + " " + this.typeName[1] + '</span><div class="type">' + this.typeName[1] + '</div><span>' + this.numName + " " + this.typeName[1] + '</span>'
+    const span = `<span>${this.numName} ${this.typeName[1]}</span>`
+    el.innerHTML = `${span}<div class="type">${this.typeName[1]}</div>${span}`
     return el
+  }
+
+  _numToName(num) {
+    if (num >= 1 && num <= 13) {
+      switch (num) {
+        case 1:
+          return 'A'
+        case 11:
+          return 'J'
+        case 12:
+          return 'Q'
+        case 13:
+          return 'K'
+        default:
+          return num
+      }
+    } else {
+      throw new Error(`Num '${this.num}' does not exist`)
+    }
+  }
+
+  _typeToName(type) {
+    switch (type) {
+      case 0:
+        return ['Hearts', '♥', 'red']
+      case 1:
+        return ['Diamonds', '♦', 'red']
+      case 2:
+        return ['Clubs', '♣', 'black']
+      case 3:
+        return ['Spades', '♠', 'black']
+      default:
+        throw new Error(`Card type '${type}' does not exist`)
+    }
   }
 }
 
@@ -52,42 +96,6 @@ function initCards() {
   }
   allCards = shuffle(allCards);
 }
-
-function typeToName (type) {
-  switch (type) {
-    case 0:
-      return ['Hearts', '♥', 'red']
-    case 1:
-      return ['Diamonds', '♦', 'red']
-    case 2:
-      return ['Clubs', '♣', 'black']
-    case 3:
-      return ['Spades', '♠', 'black']
-    default:
-      throw new Error('Card type "' + type + '" does not exist')
-  }
-}
-
-function numToName (num) {
-  if (num >= 1 && num <= 13) {
-    switch (num) {
-      case 1:
-        return 'A'
-      case 11:
-        return 'J'
-      case 12:
-        return 'Q'
-      case 13:
-        return 'K'
-      default:
-        return num
-    }
-  } else {
-    throw new Error('Num "' + num + '" does not exist')
-  }
-}
-
-
 
 
 function initStacks() {
@@ -106,7 +114,7 @@ function initStacks() {
       let randomCard = allCards[Math.floor(Math.random() * allCards.length)]
       allCards.shift(randomCard)
       
-      $('.stack')[i].appendChild(randomCard.element())
+      $('.stack')[i].appendChild(randomCard.element)
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
@@ -115,22 +123,24 @@ function initStacks() {
   }
 
   for (let i = 0; i < allCards.length; i++) {
-    $(".full").appendChild(allCards[i].element())
+    $(".full").appendChild(allCards[i].element)
   }
 }
 
 // Toggle flip
 
-let selected
+let selected = []
 
 function setSelected(el) {
-  selected = el
-  selected.classList.add("selected")
+  el.classList.add("selected")
+  selected.push(el)
 }
 
 function rmSelected() {
-  selected.classList.remove("selected")
-  selected = undefined
+  for (let el of selected) {
+    el.classList.remove("selected")
+  }
+  selected = [];
 }
 
 function initDraggable() {
@@ -147,23 +157,29 @@ function initDraggable() {
 
 function initDragAndDrop() {
   document.body.addEventListener("mouseleave", function() {
-    if (selected !== undefined) {
-      selected.style.top = "auto"
-      selected.style.left = "auto"
+    if (selected[0]) {
+      for (let el of selected) {
+        el.style.top = "auto"
+        el.style.left = "auto"
+      }
       rmSelected()
     }
   })
 
   document.addEventListener("mouseup", function() {
-    if (selected !== undefined) {
+    if (selected[0]) {
       rmSelected()
     }
   })
 
   document.addEventListener("mousemove", function() {
-    if (selected !== undefined) {
-      selected.style.top = event.clientY - selected.offsetHeight / 2 + "px"
-      selected.style.left = event.clientX - selected.offsetWidth / 2 + "px"
+    
+    if (selected[0]) {
+      console.log('sup')
+      for (let el of selected) {
+        el.style.top = event.clientY - el.offsetHeight / 2 + "px"
+        el.style.left = event.clientX - el.offsetWidth / 2 + "px"
+      }
     }
   })
   
@@ -176,17 +192,20 @@ function initDragAndDrop() {
 }
 
 function drop(parent) {
-  if (selected !== undefined) {
-    selected.parentNode.removeChild(selected)
-    let element = selected
-    rmSelected()
+  if (selected[0]) {
+    for (let el of selected) {
+      el.parentNode.removeChild(el)
+      let element = el
+      rmSelected()
 
-    parent.appendChild(element)
-    console.log(parent);
-    console.log(element);
+      parent.appendChild(element)
+      console.log(parent);
+      console.log(element);
 
-    element.style.top = "auto"
-    element.style.left = "auto"
+      element.style.top = "auto"
+      element.style.left = "auto"
+    }
+    
   }
 }
 
