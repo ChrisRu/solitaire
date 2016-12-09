@@ -9,10 +9,10 @@ function $(e) {
   return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e)
 }
 
-function shuffle(a) {
-    for (let i = a.length; i; i--) {
+function shuffle(array) {
+    for (let i = array.length; i; i--) {
         let j = Math.floor(Math.random() * i);
-        [a[i - 1], a[j]] = [a[j], a[i - 1]];
+        [array[i - 1], array[j]] = [array[j], array[i - 1]]
     }
 }
 
@@ -117,7 +117,6 @@ function initStacks() {
     }
 
     el.addEventListener("mouseup", function() {
-      console.log("sup");
       if (typeof selected[0] !== "undefined") {
         drop(this)
       }
@@ -128,8 +127,6 @@ function initStacks() {
     $(".full").appendChild(card.element)
   }
 }
-
-// Toggle flip
 
 let selected = []
 let offsetX = 0
@@ -145,19 +142,19 @@ function rmSelected() {
     for (let el of selected) {
       el.classList.remove("selected")
     }
-    selected = [];
+    selected = []
   }
 }
 
-function initDraggable() {
-  const cardsEl = $(".card")
-  
-  for (let i = 0; i < cardsEl.length; i++) {
-    cardsEl[i].addEventListener("mousedown", function(e) {
+// Drag and drop
+
+function initDragAndDrop() {
+  for (let cardsEl of $(".card")) {
+    cardsEl.addEventListener("mousedown", function(e) {
       offsetX = e.offsetX
       offsetY = e.offsetY
       if (this.parentNode.lastChild == this) {
-        this.classList.add("open");
+        this.classList.add("open")
       }
       if (this.classList.contains("open")) {
         let sibling = this
@@ -172,11 +169,7 @@ function initDraggable() {
       }
     })
   }
-}
 
-// Drag and drop
-
-function initDragAndDrop() {
   document.addEventListener("mouseup", function() {
     if (typeof selected[0] !== undefined) {
       for (let el of selected) {
@@ -185,7 +178,7 @@ function initDragAndDrop() {
       }
     }
     
-    rmSelected();
+    rmSelected()
   })
 
   document.addEventListener("mousemove", function() {
@@ -197,15 +190,13 @@ function initDragAndDrop() {
     }
   })
   
-  const foundations = $(".foundations");
-  for (let el of foundations) {
+  for (let el of $(".foundations")) {
     el.addEventListener("mouseup", function() {
       drop(this)
     })
   }
 
-  const full = $(".full")
-  full.addEventListener("click", function() {
+  $(".full").addEventListener("click", function() {
     if (this.childNodes.length > 0) {
       // Move to view stack
       let current = this.lastChild
@@ -259,7 +250,7 @@ function foundationCanStack(parent) {
     return (parseInt(selected[0].getAttribute("data-num")) === 1)
   }
 
-  if (parent.childNodes.length > 1) {
+  if (selected.length > 1) {
     return false
   }
 
@@ -286,5 +277,4 @@ function stacksCanStack(parent) {
 
 initCards()
 initStacks()
-initDraggable()
 initDragAndDrop()

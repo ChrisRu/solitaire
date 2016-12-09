@@ -26,6 +26,10 @@ body {
 	position: absolute;
 	transform: rotateY(-180deg);
 	transition: transform 0.3s ease, top 0.02s linear, left 0.02s linear;
+	z-index: 5;
+	* {
+		pointer-events: none;
+	}
 	&.open {
 		cursor: move;
 		transition: transform 0.3s ease;
@@ -74,37 +78,37 @@ body {
 	&.red {
 		color: red;
 	}
-}
-
-.selected {
-	margin-top: 0 !important;
-	pointer-events: none !important;
-	+ .selected {
-		margin-top: ($card-padding * 1 * 8) !important;
+	&.selected {
+		margin-top: 0 !important;
+		pointer-events: none;
+		z-index: 10;
 		+ .selected {
-			margin-top: ($card-padding * 2 * 8) !important;
+			margin-top: ($card-padding * 1 * 8) !important;
 			+ .selected {
-				margin-top: ($card-padding * 3 * 8) !important;
+				margin-top: ($card-padding * 2 * 8) !important;
 				+ .selected {
-					margin-top: ($card-padding * 4 * 8) !important;
+					margin-top: ($card-padding * 3 * 8) !important;
 					+ .selected {
-						margin-top: ($card-padding * 5 * 8) !important;
+						margin-top: ($card-padding * 4 * 8) !important;
 						+ .selected {
-							margin-top: ($card-padding * 6 * 8) !important;
+							margin-top: ($card-padding * 5 * 8) !important;
 							+ .selected {
-								margin-top: ($card-padding * 7 * 8) !important;
+								margin-top: ($card-padding * 6 * 8) !important;
 								+ .selected {
-									margin-top: ($card-padding * 8 * 8) !important;
+									margin-top: ($card-padding * 7 * 8) !important;
 									+ .selected {
-										margin-top: ($card-padding * 9 * 8) !important;
+										margin-top: ($card-padding * 8 * 8) !important;
 										+ .selected {
-											margin-top: ($card-padding * 10 * 8) !important;
+											margin-top: ($card-padding * 9 * 8) !important;
 											+ .selected {
-												margin-top: ($card-padding * 11 * 8) !important;
+												margin-top: ($card-padding * 10 * 8) !important;
 												+ .selected {
-													margin-top: ($card-padding * 12 * 8) !important;
+													margin-top: ($card-padding * 11 * 8) !important;
 													+ .selected {
-														margin-top: ($card-padding * 13 * 8) !important;
+														margin-top: ($card-padding * 12 * 8) !important;
+														+ .selected {
+															margin-top: ($card-padding * 13 * 8) !important;
+														}
 													}
 												}
 											}
@@ -176,9 +180,6 @@ body {
 	justify-content: space-around;
 	> div {
 		margin: 0 1em 0 0;
-	}
-	.foundations {
-		z-index: 10;
 	}
 }
 
