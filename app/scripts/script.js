@@ -48,6 +48,8 @@ class Card {
     let el = document.createElement('div')
     el.classList.add('card')
     el.classList.add(this.typeName[2])
+    el.setAttribute("data-num", this.num)
+    el.setAttribute("data-type", this.type)
     const span = `<span>${this.numName} ${this.typeName[1]}</span>`
     el.innerHTML = `${span}<div class="type">${this.typeName[1]}</div>${span}`
     return el
@@ -113,8 +115,11 @@ function initStacks() {
     for (let j = 0; j < max; j++) {
       let randomCard = allCards[Math.floor(Math.random() * allCards.length)]
       allCards.shift(randomCard)
-      
-      $('.stack')[i].appendChild(randomCard.element)
+      let el = randomCard.element;
+      if (j == max - 1) {
+        el.classList.add("open");
+      }
+      $('.stack')[i].appendChild(el)
     }
 
     $('.stack')[i].addEventListener("mouseup", function() {
@@ -152,10 +157,15 @@ function initDraggable() {
   
   for (let i = 0; i < cardsEl.length; i++) {
     cardsEl[i].addEventListener("mousedown", function() {
-      let sibling = this
-      while(sibling) {
-        setSelected(sibling)
-        sibling = sibling.nextElementSibling
+      if (this.parentNode.lastChild == this) {
+        this.classList.add("open");
+      }
+      if (this.classList.contains("open")) {
+        let sibling = this
+        while(sibling) {
+          setSelected(sibling)
+          sibling = sibling.nextElementSibling
+        }
       }
     })
   }
@@ -193,17 +203,39 @@ function initDragAndDrop() {
 
 function drop(parent) {
   if (typeof selected[0] !== undefined) {
-    for (let el of selected) {
-      let element = el
-      el.parentNode.removeChild(el)
-
-      parent.appendChild(element)
-
-      element.style.top = "auto"
-      element.style.left = "auto"
+    if (selected.length + parent.childNodes.length <= 13) {
+      if (parent.classList.contains("empty")) {
+        if (parent.childNodes.length > 0) {
+          if (parent.lastChild.getAttribute("data-num") + 1 == selected[0].getAttribute("data-num")) {
+            allowDrop(parent);
+          }
+        } else {
+          if (selected[0].getAttribute("data-num") == 1) {
+            console.log("ye")
+            allowDrop(parent)
+          }
+        }
+      }
+      if (parent.childNodes.length > 0 && parent.lastChild.classList.contains("open")) {
+        if (parent.classList.contains("stack")) {
+          allowDrop(parent)
+        }
+      }
     }
-    rmSelected()
   }
+}
+
+function allowDrop(parent) {
+  for (let el of selected) {
+    let element = el
+    el.parentNode.removeChild(el)
+
+    parent.appendChild(element)
+
+    element.style.top = "auto"
+    element.style.left = "auto"
+  }
+  rmSelected()
 }
 
 function viewCanStack(current, card) {

@@ -30,9 +30,10 @@ body {
 		pointer-events: none;
 	}
 	&.open {
+		transition: transform 0.3s ease;
 		transform: rotateY(0);
 		&:after {
-			opacity: 0;
+			display: none;
 		}
 	}
 	&:after {
@@ -75,19 +76,18 @@ body {
 	&.red {
 		color: red;
 	}
+	.selected {
+		margin: 0;
+		@for $i from 1 through 13 {
+			+ .selected {
+				margin-top: ($card-padding * ($i - 1) * 8);
+			}
+		}
+	}
 }
 
 .clickthrough {
 	pointer-events: none;
-}
-
-.selected {
-	margin: 0 !important;
-	@for $i from 2 through 13 {
-		&:nth-child(#{$i}) {
-			margin-top: ($card-padding * ($i - 1) * 8) !important;
-		}
-	}
 }
 
 .full, .view, .empty, .stack {
@@ -105,7 +105,13 @@ body {
 		margin: 0 1em 0 0;
 	}
 	.full {
-
+		.card.open {
+			transform: translateX(calc(100% + 1em));
+			&.selected {
+				transition: none;
+				transform: none;
+			}
+		}
 	}
 	.view {
 
@@ -122,24 +128,12 @@ body {
 				margin-top: $card-padding * ($i - 1) * 8;
 			}
 		}
-		.card:last-child {
-			transform: rotateY(0);
-			&:after {
-				opacity: 0;
-			}
-		}
 	}
 }
 
 .finish {
 	display: flex;
 	justify-content: space-around;
-	.card {
-		transform: rotateY(0);
-		&:after {
-			display: none;
-		}
-	}
 	> div {
 		margin: 0 1em 0 0;
 	}
