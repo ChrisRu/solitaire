@@ -170,6 +170,8 @@ function initDragAndDrop() {
     })
   }
 
+  document.addEventListener("dblclick", autoMove);
+
   document.addEventListener("mouseup", function() {
     if (typeof selected[0] !== undefined) {
       for (let el of selected) {
@@ -270,6 +272,30 @@ function stacksCanStack(parent) {
     const type1 = parseInt(parent.lastChild.getAttribute("data-type")) % 2
     const type2 = parseInt(selected[0].getAttribute("data-type")) % 2
     return (type1 !== type2)
+  }
+}
+
+function autoMove() {
+  for (let stack of $('.stack')) {
+    for (let foundation of $(".foundations")) {
+      if (stack.childNodes.length > 0) {
+        if (foundation.childNodes.length > 0) {
+          if (stack.lastChild.getAttribute("data-type") === foundation.lastChild.getAttribute("data-type")) {
+            if (parseInt(stack.lastChild.getAttribute("data-num")) === parseInt(foundation.lastChild.getAttribute("data-num")) + 1) {
+              let current = stack.lastChild
+              stack.removeChild(stack.lastChild)
+              foundation.appendChild(current)
+            }
+          }
+        } else {
+          if (stack.lastChild.getAttribute("data-num") == 1) {
+            let current = stack.lastChild
+            stack.removeChild(stack.lastChild)
+            foundation.appendChild(current)
+          }
+        }
+      }
+    }
   }
 }
 

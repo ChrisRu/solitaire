@@ -3,6 +3,7 @@ var gulp = require('gulp'),
 	nano = require('gulp-cssnano'),
 	prefix = require('gulp-autoprefixer'),
 	babel = require('gulp-babel'),
+	uglify = require('gulp-uglify'),
 	browserSync = require('browser-sync');
 
 gulp.task('default', ['serve'], function () {
@@ -21,6 +22,7 @@ gulp.task('babel', function() {
         .pipe(babel({
             presets: ['es2015']
         }))
+		.pipe(uglify())
         .pipe(gulp.dest('dist/scripts/'));
 });
 
