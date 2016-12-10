@@ -84,7 +84,7 @@ class Card {
   }
 }
 
-function initCards() {
+function createCards() {
   for (let i = 0; i <= 3; i++) {
     for (let j = 1; j <= 13; j++) {
       allCards.push(new Card(j,i))
@@ -118,7 +118,7 @@ function initStacks() {
 
     el.addEventListener("mouseup", function() {
       if (typeof selected[0] !== "undefined") {
-        drop(this)
+        onDrop(this)
       }
     })
   }
@@ -132,17 +132,27 @@ let selected = []
 let offsetX = 0
 let offsetY = 0
 
-function setSelected(el) {
+function _setSelected(el) {
   el.classList.add("selected")
   selected.push(el)
 }
 
-function rmSelected() {
+function _rmSelected() {
   if (typeof selected[0] !== undefined) {
     for (let el of selected) {
       el.classList.remove("selected")
     }
     selected = []
+  }
+}
+
+function _moveElement(element, toParent, toFront = false) {
+  let element2 = element
+  element.parentNode.removeChild(element)
+  if (toFront) {
+    toParent.insertBefore(element2, toParent.firstChild)
+  } else {
+    toParent.appendChild(element2)
   }
 }
 
@@ -159,7 +169,7 @@ function initDragAndDrop() {
       if (this.classList.contains("open")) {
         let sibling = this
         while(sibling) {
-          setSelected(sibling)
+          _setSelected(sibling)
           sibling = sibling.nextElementSibling
         }
       }
@@ -170,7 +180,7 @@ function initDragAndDrop() {
     })
   }
 
-  document.addEventListener("dblclick", autoMove);
+  document.addEventListener("dblclick", autoMove)
 
   document.addEventListener("mouseup", function() {
     if (typeof selected[0] !== undefined) {
@@ -179,8 +189,7 @@ function initDragAndDrop() {
         el.style.left = "auto"
       }
     }
-    
-    rmSelected()
+    _rmSelected()
   })
 
   document.addEventListener("mousemove", function() {
@@ -194,30 +203,24 @@ function initDragAndDrop() {
   
   for (let el of $(".foundations")) {
     el.addEventListener("mouseup", function() {
-      drop(this)
+      onDrop(this)
     })
   }
 
   $(".full").addEventListener("click", function() {
     if (this.childNodes.length > 0) {
-      // Move to view stack
-      let current = this.lastChild
-      this.removeChild(this.lastChild)
-      current.classList.add("open")
-      $(".view").appendChild(current)
+      this.lastChild.classList.add("open")
+      _moveElement(this.lastChild, $(".view"))
     } else {
-      // Reset full stack
       for (let card of $(".view .card")) {
-        let current = card
-        $(".view").removeChild(card)
-        current.classList.remove("open")
-        $(".full").insertBefore(current, $(".full").firstChild)
+        card.classList.remove("open")
+        _moveElement(card, $(".full"), true)
       }
     }
   })
 }
 
-function drop(parent) {
+function onDrop(parent) {
   if (typeof selected[0] !== undefined) {
     if (selected.length + parent.childNodes.length <= 13) {
       if (parent.classList.contains("foundations")) {
@@ -244,7 +247,7 @@ function allowDrop(parent) {
     element.style.top = "auto"
     element.style.left = "auto"
   }
-  rmSelected()
+  _rmSelected()
 }
 
 function foundationCanStack(parent) {
@@ -282,16 +285,12 @@ function autoMove() {
         if (foundation.childNodes.length > 0) {
           if (stack.lastChild.getAttribute("data-type") === foundation.lastChild.getAttribute("data-type")) {
             if (parseInt(stack.lastChild.getAttribute("data-num")) === parseInt(foundation.lastChild.getAttribute("data-num")) + 1) {
-              let current = stack.lastChild
-              stack.removeChild(stack.lastChild)
-              foundation.appendChild(current)
+              _moveElement(stack.lastChild, foundation)
             }
           }
         } else {
           if (stack.lastChild.getAttribute("data-num") == 1) {
-            let current = stack.lastChild
-            stack.removeChild(stack.lastChild)
-            foundation.appendChild(current)
+            _moveElement(stack.lastChild, foundation)
           }
         }
       }
@@ -301,6 +300,6 @@ function autoMove() {
 
 // Init
 
-initCards()
+createCards()
 initStacks()
 initDragAndDrop()
