@@ -93,7 +93,6 @@ function createCards() {
   shuffle(allCards)
 }
 
-
 function initStacks() {
   for (let i = 1; i < 8; i++) {
     let el = document.createElement("div")
@@ -128,6 +127,12 @@ function initStacks() {
   }
 }
 
+/* --------------------
+
+    HELPER FUNCTIONS
+
+-------------------- */
+
 let selected = []
 let offsetX = 0
 let offsetY = 0
@@ -156,7 +161,11 @@ function _moveElement(element, toParent, toFront = false) {
   }
 }
 
-// Drag and drop
+/* --------------------
+
+     DRAG AND DROP
+
+-------------------- */
 
 function initDragAndDrop() {
   for (let cardsEl of $(".card")) {
@@ -298,7 +307,11 @@ function autoMove() {
   }
 }
 
-// Init
+/* --------------------
+
+         INIT
+
+-------------------- */
 
 createCards()
 initStacks()
