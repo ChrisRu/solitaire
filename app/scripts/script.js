@@ -9,20 +9,29 @@ function $(e) {
   return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e)
 }
 
-function shuffle(array) {
-    for (let i = array.length; i; i--) {
+Array.prototype.shuffle = function() {
+    for (let i = this.length; i; i--) {
         let j = Math.floor(Math.random() * i);
-        [array[i - 1], array[j]] = [array[j], array[i - 1]]
+        [this[i - 1], this[j]] = [this[j], this[i - 1]]
     }
 }
+
+/* --------------------
+
+    GLOBAL VARIABLES
+
+-------------------- */
+
+let allCards = []
+let selectedElements = []
+let offsetX = 0
+let offsetY = 0
 
 /* --------------------
 
          CARDS
 
 -------------------- */
-
-let allCards = []
 
 class Card {
   constructor(num, type) {
@@ -90,7 +99,7 @@ function createCards() {
       allCards.push(new Card(j,i))
     }
   }
-  shuffle(allCards)
+  allCards.shuffle();
 }
 
 function initStacks() {
@@ -116,7 +125,7 @@ function initStacks() {
     }
 
     el.addEventListener("mouseup", function() {
-      if (typeof selected[0] !== "undefined") {
+      if (typeof selectedElements[0] !== "undefined") {
         onDrop(this)
       }
     })
@@ -133,21 +142,17 @@ function initStacks() {
 
 -------------------- */
 
-let selected = []
-let offsetX = 0
-let offsetY = 0
-
-function _setSelected(el) {
+function _addSelectedElement(el) {
   el.classList.add("selected")
-  selected.push(el)
+  selectedElements.push(el)
 }
 
-function _rmSelected() {
-  if (typeof selected[0] !== undefined) {
-    for (let el of selected) {
+function _rmSelectedElements() {
+  if (typeof selectedElements[0] !== undefined) {
+    for (let el of selectedElements) {
       el.classList.remove("selected")
     }
-    selected = []
+    selectedElements = []
   }
 }
 
@@ -178,11 +183,11 @@ function initDragAndDrop() {
       if (this.classList.contains("open")) {
         let sibling = this
         while(sibling) {
-          _setSelected(sibling)
+          _addSelectedElement(sibling)
           sibling = sibling.nextElementSibling
         }
       }
-      for (let el of selected) {
+      for (let el of selectedElements) {
         el.style.top = event.clientY - offsetY + "px"
         el.style.left = event.clientX - offsetX + "px"
       }
@@ -192,18 +197,18 @@ function initDragAndDrop() {
   document.addEventListener("dblclick", autoMove)
 
   document.addEventListener("mouseup", function() {
-    if (typeof selected[0] !== undefined) {
-      for (let el of selected) {
+    if (typeof selectedElements[0] !== undefined) {
+      for (let el of selectedElements) {
         el.style.top = "auto"
         el.style.left = "auto"
       }
     }
-    _rmSelected()
+    _rmSelectedElements()
   })
 
   document.addEventListener("mousemove", function() {
-    if (typeof selected[0] !== undefined) {
-      for (let el of selected) {
+    if (typeof selectedElements[0] !== undefined) {
+      for (let el of selectedElements) {
         el.style.top = event.clientY - offsetY + "px"
         el.style.left = event.clientX - offsetX + "px"
       }
@@ -230,8 +235,8 @@ function initDragAndDrop() {
 }
 
 function onDrop(parent) {
-  if (typeof selected[0] !== undefined) {
-    if (selected.length + parent.childNodes.length <= 13) {
+  if (typeof selectedElements[0] !== undefined) {
+    if (selectedElements.length + parent.childNodes.length <= 13) {
       if (parent.classList.contains("foundations")) {
         if (foundationCanStack(parent)) {
           allowDrop(parent)
@@ -247,7 +252,7 @@ function onDrop(parent) {
 }
 
 function allowDrop(parent) {
-  for (let el of selected) {
+  for (let el of selectedElements) {
     let element = el
     el.parentNode.removeChild(el)
 
@@ -256,33 +261,33 @@ function allowDrop(parent) {
     element.style.top = "auto"
     element.style.left = "auto"
   }
-  _rmSelected()
+  _rmSelectedElements()
 }
 
 function foundationCanStack(parent) {
   if (parent.childNodes.length === 0) {
-    return (parseInt(selected[0].getAttribute("data-num")) === 1)
+    return (parseInt(selectedElements[0].getAttribute("data-num")) === 1)
   }
 
-  if (selected.length > 1) {
+  if (selectedElements.length > 1) {
     return false
   }
 
-  if (parseInt(parent.lastChild.getAttribute("data-type")) === parseInt(selected[0].getAttribute("data-type"))) {
+  if (parseInt(parent.lastChild.getAttribute("data-type")) === parseInt(selectedElements[0].getAttribute("data-type"))) {
     const num1 = parseInt(parent.lastChild.getAttribute("data-num"))
-    const num2 = parseInt(selected[0].getAttribute("data-num"))
+    const num2 = parseInt(selectedElements[0].getAttribute("data-num"))
     return (num1 + 1 === num2)
   }
 }
 
 function stacksCanStack(parent) {
   if (parent.childNodes.length === 0) {
-    return (parseInt(selected[0].getAttribute("data-num")) === 13)
+    return (parseInt(selectedElements[0].getAttribute("data-num")) === 13)
   }
 
-  if (parseInt(parent.lastChild.getAttribute("data-num")) - 1 === parseInt(selected[0].getAttribute("data-num"))) {
+  if (parseInt(parent.lastChild.getAttribute("data-num")) - 1 === parseInt(selectedElements[0].getAttribute("data-num"))) {
     const type1 = parseInt(parent.lastChild.getAttribute("data-type")) % 2
-    const type2 = parseInt(selected[0].getAttribute("data-type")) % 2
+    const type2 = parseInt(selectedElements[0].getAttribute("data-type")) % 2
     return (type1 !== type2)
   }
 }
