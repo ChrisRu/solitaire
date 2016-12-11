@@ -1,1 +1,440 @@
-"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function $(t){return void 0===document.querySelectorAll(t)[1]?document.querySelector(t):document.querySelectorAll(t)}function createCards(){for(var t=0;t<=3;t++)for(var e=1;e<=13;e++)allCards.push(new Card(e,t));allCards.shuffle()}function initStacks(){for(var t=1;t<8;t++){var e=document.createElement("div");e.classList.add("stack"),e.classList.add("stack_"+t),e.setAttribute("data-max",t),$(".stacks").appendChild(e)}var r=!0,n=!1,a=void 0;try{for(var l,o=$(".stack")[Symbol.iterator]();!(r=(l=o.next()).done);r=!0){for(var i=l.value,s=i.getAttribute("data-max"),d=0;d<s;d++){var u=allCards[0];allCards.splice(0,1);var c=u.element;d==s-1&&c.classList.add("open"),i.appendChild(c)}i.addEventListener("mouseup",function(){"undefined"!=typeof selectedElements[0]&&onDrop(this)})}}catch(t){n=!0,a=t}finally{try{!r&&o.return&&o.return()}finally{if(n)throw a}}var f=!0,y=!1,m=void 0;try{for(var v,h=allCards[Symbol.iterator]();!(f=(v=h.next()).done);f=!0){var p=v.value;$(".full").appendChild(p.element)}}catch(t){y=!0,m=t}finally{try{!f&&h.return&&h.return()}finally{if(y)throw m}}}function _addSelectedElement(t){t.classList.add("selected"),selectedElements.push(t)}function _rmSelectedElements(){if(void 0!==_typeof(selectedElements[0])){var t=!0,e=!1,r=void 0;try{for(var n,a=selectedElements[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value;l.classList.remove("selected")}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}selectedElements=[]}}function _moveElement(t,e){var r=arguments.length>2&&void 0!==arguments[2]&&arguments[2],n=t;t.parentNode.removeChild(t),r?e.insertBefore(n,e.firstChild):e.appendChild(n)}function initDragAndDrop(){var t=!0,e=!1,r=void 0;try{for(var n,a=$(".card")[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value;l.addEventListener("mousedown",function(t){if(offsetX=t.offsetX,offsetY=t.offsetY,this.parentNode.lastChild==this&&this.classList.add("open"),this.classList.contains("open"))for(var e=this;e;)_addSelectedElement(e),e=e.nextElementSibling;var r=!0,n=!1,a=void 0;try{for(var l,o=selectedElements[Symbol.iterator]();!(r=(l=o.next()).done);r=!0){var i=l.value;i.style.top=event.clientY-offsetY+"px",i.style.left=event.clientX-offsetX+"px"}}catch(t){n=!0,a=t}finally{try{!r&&o.return&&o.return()}finally{if(n)throw a}}})}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}document.addEventListener("dblclick",autoMove),document.addEventListener("mouseup",function(){if(void 0!==_typeof(selectedElements[0])){var t=!0,e=!1,r=void 0;try{for(var n,a=selectedElements[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value;l.style.top="auto",l.style.left="auto"}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}}_rmSelectedElements()}),document.addEventListener("mousemove",function(){if(void 0!==_typeof(selectedElements[0])){var t=!0,e=!1,r=void 0;try{for(var n,a=selectedElements[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value;l.style.top=event.clientY-offsetY+"px",l.style.left=event.clientX-offsetX+"px"}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}}});var o=!0,i=!1,s=void 0;try{for(var d,u=$(".foundations")[Symbol.iterator]();!(o=(d=u.next()).done);o=!0){var c=d.value;c.addEventListener("mouseup",function(){onDrop(this)})}}catch(t){i=!0,s=t}finally{try{!o&&u.return&&u.return()}finally{if(i)throw s}}$(".full").addEventListener("click",function(){if(this.childNodes.length>0)this.lastChild.classList.add("open"),_moveElement(this.lastChild,$(".view"));else{var t=!0,e=!1,r=void 0;try{for(var n,a=$(".view .card")[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value;l.classList.remove("open"),_moveElement(l,$(".full"),!0)}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}}})}function onDrop(t){void 0!==_typeof(selectedElements[0])&&selectedElements.length+t.childNodes.length<=13&&(t.classList.contains("foundations")&&foundationCanStack(t)&&allowDrop(t),t.classList.contains("stack")&&stacksCanStack(t)&&allowDrop(t))}function allowDrop(t){var e=!0,r=!1,n=void 0;try{for(var a,l=selectedElements[Symbol.iterator]();!(e=(a=l.next()).done);e=!0){var o=a.value,i=o;o.parentNode.removeChild(o),t.appendChild(i),i.style.top="auto",i.style.left="auto"}}catch(t){r=!0,n=t}finally{try{!e&&l.return&&l.return()}finally{if(r)throw n}}_rmSelectedElements()}function foundationCanStack(t){if(0===t.childNodes.length)return 1===parseInt(selectedElements[0].getAttribute("data-num"));if(selectedElements.length>1)return!1;if(parseInt(t.lastChild.getAttribute("data-type"))===parseInt(selectedElements[0].getAttribute("data-type"))){var e=parseInt(t.lastChild.getAttribute("data-num")),r=parseInt(selectedElements[0].getAttribute("data-num"));return e+1===r}}function stacksCanStack(t){if(0===t.childNodes.length)return 13===parseInt(selectedElements[0].getAttribute("data-num"));if(parseInt(t.lastChild.getAttribute("data-num"))-1===parseInt(selectedElements[0].getAttribute("data-num"))){var e=parseInt(t.lastChild.getAttribute("data-type"))%2,r=parseInt(selectedElements[0].getAttribute("data-type"))%2;return e!==r}}function autoMove(){var t=!0,e=!1,r=void 0;try{for(var n,a=$(".stack")[Symbol.iterator]();!(t=(n=a.next()).done);t=!0){var l=n.value,o=!0,i=!1,s=void 0;try{for(var d,u=$(".foundations")[Symbol.iterator]();!(o=(d=u.next()).done);o=!0){var c=d.value;l.childNodes.length>0&&(c.childNodes.length>0?l.lastChild.getAttribute("data-type")===c.lastChild.getAttribute("data-type")&&parseInt(l.lastChild.getAttribute("data-num"))===parseInt(c.lastChild.getAttribute("data-num"))+1&&_moveElement(l.lastChild,c):1==l.lastChild.getAttribute("data-num")&&_moveElement(l.lastChild,c))}}catch(t){i=!0,s=t}finally{try{!o&&u.return&&u.return()}finally{if(i)throw s}}}}catch(t){e=!0,r=t}finally{try{!t&&a.return&&a.return()}finally{if(e)throw r}}}var _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},_createClass=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}();Array.prototype.shuffle=function(){for(var t=this.length;t;t--){var e=Math.floor(Math.random()*t),r=[this[e],this[t-1]];this[t-1]=r[0],this[e]=r[1]}};var allCards=[],selectedElements=[],offsetX=0,offsetY=0,Card=function(){function t(e,r){_classCallCheck(this,t),this.num=e,this.type=r}return _createClass(t,[{key:"_numToName",value:function(t){if(!(t>=1&&t<=13))throw new Error("Num '"+this.num+"' does not exist");switch(t){case 1:return"A";case 11:return"J";case 12:return"Q";case 13:return"K";default:return t}}},{key:"_typeToName",value:function(t){switch(t){case 0:return["Hearts","♥","red"];case 1:return["Clubs","♣","black"];case 2:return["Diamonds","♦","red"];case 3:return["Spades","♠","black"];default:throw new Error("Card type '"+t+"' does not exist")}}},{key:"numName",get:function(){return this._numToName(this.num)}},{key:"typeName",get:function(){return this._typeToName(this.type)}},{key:"element",get:function(){var t=document.createElement("div");t.classList.add("card"),t.classList.add(this.typeName[2]),t.setAttribute("data-num",this.num),t.setAttribute("data-type",this.type);var e="<span>"+this.numName+" "+this.typeName[1]+"</span>";return t.innerHTML=e+'<div class="type">'+this.typeName[1]+"</div>"+e,t}}]),t}();createCards(),initStacks(),initDragAndDrop();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/* --------------------
+
+   GENERAL FUNCTIONS   
+
+-------------------- */
+
+function $(e) {
+  return document.querySelectorAll(e)[1] === undefined ? document.querySelector(e) : document.querySelectorAll(e);
+}
+
+Array.prototype.shuffle = function () {
+  for (var i = this.length; i; i--) {
+    var j = Math.floor(Math.random() * i);
+    var _ref = [this[j], this[i - 1]];
+    this[i - 1] = _ref[0];
+    this[j] = _ref[1];
+  }
+};
+
+/* --------------------
+
+    GLOBAL VARIABLES
+
+-------------------- */
+
+var offsetX = 0;
+var offsetY = 0;
+
+/* --------------------
+
+         CARDS
+
+-------------------- */
+
+var Card = function () {
+  function Card(type, num) {
+    _classCallCheck(this, Card);
+
+    this.type = type;
+    this.num = num;
+  }
+
+  _createClass(Card, [{
+    key: '_typeToName',
+    value: function _typeToName(type) {
+      switch (type) {
+        case 0:
+          return ['Hearts', '♥', 'red'];
+        case 1:
+          return ['Clubs', '♣', 'black'];
+        case 2:
+          return ['Diamonds', '♦', 'red'];
+        case 3:
+          return ['Spades', '♠', 'black'];
+        default:
+          throw new Error('Card type \'' + type + '\' does not exist');
+      }
+    }
+  }, {
+    key: '_numToName',
+    value: function _numToName(num) {
+      if (num >= 1 && num <= 13) {
+        switch (num) {
+          case 1:
+            return 'A';
+          case 11:
+            return 'J';
+          case 12:
+            return 'Q';
+          case 13:
+            return 'K';
+          default:
+            return num;
+        }
+      } else {
+        throw new Error('Num \'' + this.num + '\' does not exist');
+      }
+    }
+  }, {
+    key: 'typeName',
+    get: function get() {
+      return this._typeToName(this.type);
+    }
+  }, {
+    key: 'numName',
+    get: function get() {
+      return this._numToName(this.num);
+    }
+  }, {
+    key: 'element',
+    get: function get() {
+      var el = document.createElement('div');
+      el.classList.add('card', this.typeName[2]);
+
+      var span = '<span>' + this.numName + ' ' + this.typeName[1] + '</span>';
+      el.innerHTML = span + '<div class="type">' + this.typeName[1] + '</div>' + span;
+      el.addEventListener("mousedown", function (e) {
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        if (this.parentNode.lastChild == this) {
+          this.classList.add("open");
+        }
+        if (this.classList.contains("open")) {
+          var sibling = this;
+          while (sibling) {
+            _addSelectedElement(sibling);
+            sibling = sibling.nextElementSibling;
+          }
+        }
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = selectedElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _el = _step.value;
+
+            _el.style.top = event.clientY - offsetY + "px";
+            _el.style.left = event.clientX - offsetX + "px";
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      });
+      return el;
+    }
+  }]);
+
+  return Card;
+}();
+
+var Stack = function () {
+  function Stack(cards) {
+    _classCallCheck(this, Stack);
+
+    this.cards = cards;
+  }
+
+  _createClass(Stack, [{
+    key: 'allCards',
+    get: function get() {
+      console.log(this.cards);
+      return this.cards;
+    }
+  }, {
+    key: 'addCard',
+    set: function set(card) {
+      this.cards.push(card);
+    }
+  }, {
+    key: 'removeCard',
+    set: function set(card) {
+      this.cards.splice(this.cards.indexOf(card), 1);
+    }
+  }]);
+
+  return Stack;
+}();
+
+var FoundationStack = function (_Stack) {
+  _inherits(FoundationStack, _Stack);
+
+  function FoundationStack() {
+    _classCallCheck(this, FoundationStack);
+
+    return _possibleConstructorReturn(this, (FoundationStack.__proto__ || Object.getPrototypeOf(FoundationStack)).apply(this, arguments));
+  }
+
+  return FoundationStack;
+}(Stack);
+
+var TableauStack = function (_Stack2) {
+  _inherits(TableauStack, _Stack2);
+
+  function TableauStack() {
+    _classCallCheck(this, TableauStack);
+
+    return _possibleConstructorReturn(this, (TableauStack.__proto__ || Object.getPrototypeOf(TableauStack)).apply(this, arguments));
+  }
+
+  return TableauStack;
+}(Stack);
+
+var Board = function () {
+  function Board() {
+    _classCallCheck(this, Board);
+
+    this.cards = [];
+    this.stacks = {
+      tableau: [],
+      foundation: []
+    };
+    this.selected = [];
+
+    // Create cards
+    for (var i = 0; i < 4; i++) {
+      for (var j = 1; j <= 13; j++) {
+        this.cards.push(new Card(i, j));
+      }
+    }
+
+    // Randomize cards
+    this.cards.shuffle();
+
+    // Tableau Stacks
+    for (var _i = 0; _i < 7; _i++) {
+      var cards = [];
+      for (var _j = 1; _j <= _i + 1; _j++) {
+        cards.push(this.cards[0]);
+        this.cards.shift();
+      }
+      var stack = new TableauStack(cards);
+      this.stacks.tableau.push(stack);
+    }
+
+    // Foundation Stacks
+    for (var _i2 = 0; _i2 < 4; _i2++) {
+      this.stacks.foundation.push(new FoundationStack());
+    }
+  }
+
+  _createClass(Board, [{
+    key: 'render',
+    value: function render(stack) {
+      var element = $(".stack" + String(stack.length));
+      while (element.hasChildNodes()) {
+        element.removeChild(element.lastChild);
+      }
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = stack[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var card = _step2.value;
+
+          element.appendChild(card.element);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+    }
+  }]);
+
+  return Board;
+}();
+
+var board = new Board();
+
+console.log(board);
+for (var i = 0; i < $(".stack").length; i++) {
+  board.render(board.stacks.tableau[i].cards);
+}
+
+/* --------------------
+
+     DRAG AND DROP
+
+-------------------- 
+
+function initDragAndDrop() {
+  for (let cardsEl of $(".card")) {
+    cardsEl.addEventListener("mousedown", function(e) {
+      offsetX = e.offsetX
+      offsetY = e.offsetY
+      if (this.parentNode.lastChild == this) {
+        this.classList.add("open")
+      }
+      if (this.classList.contains("open")) {
+        let sibling = this
+        while(sibling) {
+          _addSelectedElement(sibling)
+          sibling = sibling.nextElementSibling
+        }
+      }
+      for (let el of selectedElements) {
+        el.style.top = event.clientY - offsetY + "px"
+        el.style.left = event.clientX - offsetX + "px"
+      }
+    })
+  }
+
+  document.addEventListener("dblclick", autoMove)
+
+  document.addEventListener("mouseup", function() {
+    if (typeof selectedElements[0] !== undefined) {
+      for (let el of selectedElements) {
+        el.style.top = "auto"
+        el.style.left = "auto"
+      }
+    }
+    _rmSelectedElements()
+  })
+
+  document.addEventListener("mousemove", function() {
+    if (typeof selectedElements[0] !== undefined) {
+      for (let el of selectedElements) {
+        el.style.top = event.clientY - offsetY + "px"
+        el.style.left = event.clientX - offsetX + "px"
+      }
+    }
+  })
+  
+  for (let el of $(".foundations")) {
+    el.addEventListener("mouseup", function() {
+      onDrop(this)
+    })
+  }
+
+  $(".full").addEventListener("click", function() {
+    if (this.childNodes.length > 0) {
+      this.lastChild.classList.add("open")
+      _moveElement(this.lastChild, $(".view"))
+    } else {
+      for (let card of $(".view .card")) {
+        card.classList.remove("open")
+        _moveElement(card, $(".full"), true)
+      }
+    }
+  })
+}
+
+function onDrop(parent) {
+  if (typeof selectedElements[0] !== undefined) {
+    if (selectedElements.length + parent.childNodes.length <= 13) {
+      if (parent.classList.contains("foundations")) {
+        if (foundationCanStack(parent)) {
+          allowDrop(parent)
+        }
+      }
+      if (parent.classList.contains("stack")) {
+        if (stacksCanStack(parent)) {
+          allowDrop(parent)
+        }
+      }
+    }
+  }
+}
+
+function allowDrop(parent) {
+  for (let el of selectedElements) {
+    let element = el
+    el.parentNode.removeChild(el)
+
+    parent.appendChild(element)
+
+    element.style.top = "auto"
+    element.style.left = "auto"
+  }
+  _rmSelectedElements()
+}
+
+function foundationCanStack(parent) {
+  if (parent.childNodes.length === 0) {
+    return (parseInt(selectedElements[0].getAttribute("data-num")) === 1)
+  }
+
+  if (selectedElements.length > 1) {
+    return false
+  }
+
+  if (parseInt(parent.lastChild.getAttribute("data-type")) === parseInt(selectedElements[0].getAttribute("data-type"))) {
+    const num1 = parseInt(parent.lastChild.getAttribute("data-num"))
+    const num2 = parseInt(selectedElements[0].getAttribute("data-num"))
+    return (num1 + 1 === num2)
+  }
+}
+
+function stacksCanStack(parent) {
+  if (parent.childNodes.length === 0) {
+    return (parseInt(selectedElements[0].getAttribute("data-num")) === 13)
+  }
+
+  if (parseInt(parent.lastChild.getAttribute("data-num")) - 1 === parseInt(selectedElements[0].getAttribute("data-num"))) {
+    const type1 = parseInt(parent.lastChild.getAttribute("data-type")) % 2
+    const type2 = parseInt(selectedElements[0].getAttribute("data-type")) % 2
+    return (type1 !== type2)
+  }
+}
+
+function autoMove() {
+  for (let stack of $('.stack')) {
+    for (let foundation of $(".foundations")) {
+      if (stack.childNodes.length > 0) {
+        if (foundation.childNodes.length > 0) {
+          if (stack.lastChild.getAttribute("data-type") === foundation.lastChild.getAttribute("data-type")) {
+            if (parseInt(stack.lastChild.getAttribute("data-num")) === parseInt(foundation.lastChild.getAttribute("data-num")) + 1) {
+              _moveElement(stack.lastChild, foundation)
+            }
+          }
+        } else {
+          if (stack.lastChild.getAttribute("data-num") == 1) {
+            _moveElement(stack.lastChild, foundation)
+          }
+        }
+      }
+    }
+  }
+}
+
+ --------------------
+
+         INIT
+
+-------------------- 
+
+initDragAndDrop()
+*/

@@ -22,8 +22,6 @@ Array.prototype.shuffle = function() {
 
 -------------------- */
 
-let allCards = []
-let selectedElements = []
 let offsetX = 0
 let offsetY = 0
 
@@ -34,28 +32,59 @@ let offsetY = 0
 -------------------- */
 
 class Card {
-  constructor(num, type) {
-    this.num = num
+  constructor(type, num) {
     this.type = type
-  }
-  
-  get numName() {
-    return this._numToName(this.num)
+    this.num = num
   }
 
   get typeName() {
     return this._typeToName(this.type)
   }
 
+  get numName() {
+    return this._numToName(this.num)
+  }
+
   get element() {
     let el = document.createElement('div')
-    el.classList.add('card')
-    el.classList.add(this.typeName[2])
-    el.setAttribute("data-num", this.num)
-    el.setAttribute("data-type", this.type)
+    el.classList.add('card', this.typeName[2])
+
     const span = `<span>${this.numName} ${this.typeName[1]}</span>`
     el.innerHTML = `${span}<div class="type">${this.typeName[1]}</div>${span}`
+    el.addEventListener("mousedown", function(e) {
+      offsetX = e.offsetX
+      offsetY = e.offsetY
+      if (this.parentNode.lastChild == this) {
+        this.classList.add("open")
+      }
+      if (this.classList.contains("open")) {
+        let sibling = this
+        while(sibling) {
+          _addSelectedElement(sibling)
+          sibling = sibling.nextElementSibling
+        }
+      }
+      for (let el of selectedElements) {
+        el.style.top = event.clientY - offsetY + "px"
+        el.style.left = event.clientX - offsetX + "px"
+      }
+    })
     return el
+  }
+
+  _typeToName(type) {
+    switch (type) {
+      case 0:
+        return ['Hearts', '♥', 'red']
+      case 1:
+        return ['Clubs', '♣', 'black']
+      case 2:
+        return ['Diamonds', '♦', 'red']
+      case 3:
+        return ['Spades', '♠', 'black']
+      default:
+        throw new Error(`Card type '${type}' does not exist`)
+    }
   }
 
   _numToName(num) {
@@ -76,101 +105,95 @@ class Card {
       throw new Error(`Num '${this.num}' does not exist`)
     }
   }
+}
 
-  _typeToName(type) {
-    switch (type) {
-      case 0:
-        return ['Hearts', '♥', 'red']
-      case 1:
-        return ['Clubs', '♣', 'black']
-      case 2:
-        return ['Diamonds', '♦', 'red']
-      case 3:
-        return ['Spades', '♠', 'black']
-      default:
-        throw new Error(`Card type '${type}' does not exist`)
-    }
+class Stack { 
+  constructor(cards) {
+    this.cards = cards
+  }
+
+  get allCards() {
+    console.log(this.cards)
+    return this.cards
+  }
+
+  set addCard(card) {
+    this.cards.push(card)
+  }
+
+  set removeCard(card) {
+    this.cards.splice(this.cards.indexOf(card), 1)
   }
 }
 
-function createCards() {
-  for (let i = 0; i <= 3; i++) {
-    for (let j = 1; j <= 13; j++) {
-      allCards.push(new Card(j,i))
-    }
-  }
-  allCards.shuffle();
+class FoundationStack extends Stack {
+  
 }
 
-function initStacks() {
-  for (let i = 1; i < 8; i++) {
-    let el = document.createElement("div")
-    el.classList.add("stack")
-    el.classList.add("stack_" + i)
-    el.setAttribute("data-max", i)
-    $('.stacks').appendChild(el)
-  }
+class TableauStack extends Stack {
+  
+}
 
-  for (let el of $(".stack")) {
-    let max = el.getAttribute("data-max")
+class Board {
+  constructor() {
+    this.cards = []
+    this.stacks = {
+      tableau: [],
+      foundation: []
+    }
+    this.selected = []
 
-    for (let j = 0; j < max; j++) {
-      let card = allCards[0]
-      allCards.splice(0, 1)
-      let newEl = card.element
-      if (j == max - 1) {
-        newEl.classList.add("open")
+    // Create cards
+    for (let i = 0; i < 4; i++) {
+      for (let j = 1; j <= 13; j++) {
+        this.cards.push(new Card(i,j))
       }
-      el.appendChild(newEl)
     }
 
-    el.addEventListener("mouseup", function() {
-      if (typeof selectedElements[0] !== "undefined") {
-        onDrop(this)
+    // Randomize cards
+    this.cards.shuffle()
+    
+    // Tableau Stacks
+    for (let i = 0; i < 7; i++) {
+      let cards = []
+      for (let j = 1; j <= i + 1; j++) {
+        cards.push(this.cards[0])
+        this.cards.shift()
       }
-    })
-  }
-
-  for (let card of allCards) {
-    $(".full").appendChild(card.element)
-  }
-}
-
-/* --------------------
-
-    HELPER FUNCTIONS
-
--------------------- */
-
-function _addSelectedElement(el) {
-  el.classList.add("selected")
-  selectedElements.push(el)
-}
-
-function _rmSelectedElements() {
-  if (typeof selectedElements[0] !== undefined) {
-    for (let el of selectedElements) {
-      el.classList.remove("selected")
+      let stack = new TableauStack(cards)
+      this.stacks.tableau.push(stack)
     }
-    selectedElements = []
+
+    // Foundation Stacks
+    for (let i = 0; i < 4; i++) {
+      this.stacks.foundation.push(new FoundationStack)
+    }
+  }
+
+  render(stack) {
+    let element = $(".stack" + String(stack.length))
+    while (element.hasChildNodes()) {
+      element.removeChild(element.lastChild);
+    }
+    for (let card of stack) {
+      element.appendChild(card.element)
+    }
   }
 }
 
-function _moveElement(element, toParent, toFront = false) {
-  let element2 = element
-  element.parentNode.removeChild(element)
-  if (toFront) {
-    toParent.insertBefore(element2, toParent.firstChild)
-  } else {
-    toParent.appendChild(element2)
-  }
+const board = new Board
+
+console.log(board)
+for (let i = 0; i < $(".stack").length; i++) {
+  board.render(board.stacks.tableau[i].cards)
 }
+
 
 /* --------------------
 
      DRAG AND DROP
 
--------------------- */
+-------------------- 
 
 function initDragAndDrop() {
   for (let cardsEl of $(".card")) {
@@ -312,12 +335,11 @@ function autoMove() {
   }
 }
 
-/* --------------------
+ --------------------
 
          INIT
 
--------------------- */
+-------------------- 
 
-createCards()
-initStacks()
 initDragAndDrop()
+*/
